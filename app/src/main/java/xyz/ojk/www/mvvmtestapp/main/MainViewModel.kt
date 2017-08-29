@@ -4,7 +4,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,9 +25,9 @@ class MainViewModel: ViewModel() {
 
     private var photos: MutableLiveData<MutableList<Photo>> = MutableLiveData()
 
-    private var page_index = 0;
-
     private var isLoading: MutableLiveData<Boolean> = MutableLiveData()
+
+    private var page_index = 0;
 
     init {
         DaggerNetworkComponent.builder().networkModule(NetworkModule("https://api.flickr.com/"))
@@ -48,13 +47,12 @@ class MainViewModel: ViewModel() {
 
     fun loadData() {
         isLoading.value = true
-        compositeDisposal.add(flickrRepository.getPhotos(page_index++)
+        compositeDisposal.add(flickrRepository.getPhotosFromApi(page_index++)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter { it -> it.stat.equals("ok") }
                 .subscribe({
                     photoResult -> (photos?.value ?: mutableListOf()).let {
-                        it.addAll(photoResult.photos.photo)
+                        it.addAll(photoResult.photo)
                         photos.value = it
                         isLoading.value = false
                     }

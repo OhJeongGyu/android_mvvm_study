@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.jakewharton.rxbinding2.view.RxView
 import xyz.ojk.www.mvvmtestapp.R
 import xyz.ojk.www.mvvmtestapp.domain.data.Photo
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -24,9 +26,12 @@ class MainPhotoRecyclerAdapter @Inject constructor(val context: Context) : Recyc
                 .load(makeThumnailUrl(items[position]))
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.notification_template_icon_bg)
+//                .placeholder(R.drawable.notification_template_icon_bg)
                 .into(holder?.imageViewOnMainPhotoHolder)
 
+        RxView.clicks(holder?.itemView!!)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe()
 
     }
 
@@ -34,8 +39,9 @@ class MainPhotoRecyclerAdapter @Inject constructor(val context: Context) : Recyc
 
     override fun getItemCount(): Int = items.size
 
-    fun setItems(photos: MutableList<Photo>) {
-        this.items = photos
+    fun addItems(photos: MutableList<Photo>) {
+        photos.filter{ photo -> !items.contains(photo) }
+                .forEach { it -> items.add(it) }
         notifyDataSetChanged()
     }
 

@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.zum.answer.answerzum.dagger.DaggerActivityComponent
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.ojk.www.mvvmtestapp.App
 import xyz.ojk.www.mvvmtestapp.BaseActivity
 import xyz.ojk.www.mvvmtestapp.R
-import xyz.ojk.www.mvvmtestapp.dagger.DaggerActivityComponent
 import xyz.ojk.www.mvvmtestapp.main.MainViewModel
 import xyz.ojk.www.mvvmtestapp.main.adapter.MainPhotoRecyclerAdapter
 import javax.inject.Inject
@@ -45,7 +45,7 @@ class MainActivity : BaseActivity()  {
         }
 
         viewModel.getPhotos().observe(this, Observer {
-            it -> adapter.setItems(it!!)
+            it -> adapter.addItems(it!!)
         })
 
         viewModel.isLoading().observe(this, Observer {
@@ -55,6 +55,10 @@ class MainActivity : BaseActivity()  {
             }
         })
 
+
+    }
+
+    fun startDetailActivityByPhoto() {
 
     }
 }

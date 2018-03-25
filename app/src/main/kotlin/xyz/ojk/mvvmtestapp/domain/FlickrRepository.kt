@@ -11,7 +11,7 @@ import javax.inject.Inject
 class FlickrRepository @Inject constructor(val flickrService: FlickrService){
 
     private val METHOD_GET_RECENT = "flickr.photos.getRecent"
-    private val API_KEY = "<API_KEY>"
+    private val API_KEY = "289e8b0e7a1ce218cb74ac08dffd103f"
 
     fun getPhotosFromApi(page: Int): Single<Photos> = flickrService.getPhotos(METHOD_GET_RECENT, API_KEY, page, 20, "json", 1).map { it -> it.photos }
 

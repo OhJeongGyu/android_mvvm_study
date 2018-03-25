@@ -14,6 +14,7 @@ import xyz.ojk.mvvmtestapp.base.BaseActivity
 import xyz.ojk.mvvmtestapp.R
 import xyz.ojk.mvvmtestapp.presentation.main.MainViewModel
 import xyz.ojk.mvvmtestapp.presentation.main.adapter.MainPhotoRecyclerAdapter
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -63,8 +64,8 @@ class MainActivity : BaseActivity()  {
         }
 
         viewModel += RxRecyclerView.scrollEvents(recyclerView)
-                .filter{ recyclerView.childCount - recyclerView.layoutManager.itemCount < (recyclerView.layoutManager.itemCount as GridLayoutManager).findFirstVisibleItemPosition() + 5 }
-                .subscribe({ viewModel.loadData() }, Throwable::printStackTrace)
+                .throttleFirst(2000, TimeUnit.MILLISECONDS)
+                .subscribe({ viewModel.scrollChanged(recyclerView.childCount, recyclerView.layoutManager.itemCount, (recyclerView.layoutManager as GridLayoutManager).findFirstVisibleItemPosition()) }, Throwable::printStackTrace)
 
     }
 

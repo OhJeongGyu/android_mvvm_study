@@ -9,6 +9,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_detail.*
 import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 import org.jetbrains.anko.singleTop
 import xyz.ojk.mvvmtestapp.App
 import xyz.ojk.mvvmtestapp.base.BaseActivity
@@ -20,7 +21,7 @@ class DetailActivity : BaseActivity() {
 
     companion object {
         fun startActivity(context: Context, url: String) {
-            context.startActivity(context.intentFor<DetailActivity>("URL" to url).singleTop())
+            context.startActivity(context.intentFor<DetailActivity>("URL" to url).newTask())
         }
     }
 

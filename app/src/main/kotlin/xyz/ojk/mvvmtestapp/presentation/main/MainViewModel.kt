@@ -1,9 +1,11 @@
 package xyz.ojk.mvvmtestapp.presentation.main
 
+import android.support.v7.widget.GridLayoutManager
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import kotlinx.android.synthetic.main.activity_main.*
 import xyz.ojk.mvvmtestapp.base.BaseViewModel
 import xyz.ojk.mvvmtestapp.domain.FlickrRepository
 import xyz.ojk.mvvmtestapp.data.entity.Photo
@@ -27,15 +29,22 @@ class MainViewModel @Inject constructor(private val flickrRepository: FlickrRepo
 
 
     fun loadData() {
+
+        isLoading.onNext(true)
+
         compositeDisposal.add(isLoading.filter { it }
-                .flatMap { flickrRepository.getPhotosFromApi(pageIndex++).toObservable() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .doOnSubscribe { isLoading.onNext(true) }
-                .doOnError{ isLoading.onNext(false) }
+                .flatMap { flickrRepository.getPhotosFromApi(pageIndex++).toObservable() }
+                .doOnNext{ isLoading.onNext(false) }
+                .doOnError { isLoading.onNext(false)  }
                 .subscribe({ photos.onNext(it.photo) }, Throwable::printStackTrace))
     }
 
+
+    fun scrollChanged(child: Int, itemCount: Int, firstVisible: Int) {
+        if(child - itemCount < firstVisible + 5) loadData()
+    }
 
 
 }
